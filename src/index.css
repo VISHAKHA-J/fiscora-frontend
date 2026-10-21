@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #081315;
+  --color-pane: #0e1e21;
+  --color-bone: #e9e4d6;
+  --color-mist: #93a8a4;
+  --color-brass: #c9a45c;
+  --color-brass-light: #d8b66e;
+  --color-rule: #567377;
+  --color-verdigris: #2f5b57;
+  --color-error: #e58b7b;
+
+  --font-display: "Libre Caslon Display", Georgia, serif;
+  --font-sans: "Hanken Grotesk", system-ui, sans-serif;
+
+  --animate-settle: settle 2.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @keyframes settle {
+    from {
+      opacity: 0;
+      transform: rotate(-14deg) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
