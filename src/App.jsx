@@ -1,8 +1,10 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import AppLayout from './components/AppLayout.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
-import Dashboard from './pages/Dashboard.jsx';
+import Accounts from './pages/Accounts.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
+import Categories from './pages/Categories.jsx';
 
 export default function App() {
   return (
@@ -11,10 +13,13 @@ export default function App() {
       <Route path="/register" element={<Register />} />
 
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route element={<AppLayout />}>
+          <Route path="/accounts" element={<Accounts />} />
+          <Route path="/categories" element={<Categories />} />
+        </Route>
       </Route>
 
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/accounts" replace />} />
     </Routes>
   );
 }

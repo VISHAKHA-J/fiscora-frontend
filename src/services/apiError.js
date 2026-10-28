@@ -6,7 +6,7 @@ export function parseApiError(error) {
   if (!error.response) {
     return {
       status: null,
-      message: 'Cannot reach the server. Check that the backend is running.',
+      message: 'Cannot reach the server. Check if the server is running.',
       fieldErrors: {},
     };
   }
