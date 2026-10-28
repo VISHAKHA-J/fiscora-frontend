@@ -9,7 +9,7 @@ export default function Login() {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectTo = location.state?.from?.pathname ?? '/accounts';
+  const redirectTo = location.state?.from?.pathname ?? '/dashboard';
 
   const [form, setForm] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});

@@ -17,7 +17,7 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
 
   if (isAuthenticated) {
-    return <Navigate to="/accounts" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   const handleChange = (event) => {
@@ -65,7 +65,7 @@ export default function Register() {
         email: form.email.trim(),
         password: form.password,
       });
-      navigate('/accounts', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       const { status, message, fieldErrors } = parseApiError(error);
       if (status === 409) {
