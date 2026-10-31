@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { parseApiError } from '../services/apiError.js';
-import { getDashboardSummary } from '../services/dashboardService.js';
+import { getDashboardSummary, getTrend } from '../services/dashboardService.js';
 import { currentMonth, formatDate, formatMonth, shiftMonth } from '../utils/date.js';
 import { formatMoney } from '../utils/money.js';
 import SpendingDonut, { SLICE_COLORS } from '../components/SpendingDonut.jsx';
+import TrendChart from '../components/TrendChart.jsx';
+
 
 const textAction =
   'min-h-10 cursor-pointer px-1.5 text-sm font-medium text-mist hover:text-bone focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass';
@@ -48,6 +50,22 @@ export default function Dashboard() {
       cancelled = true;
     };
   }, [month, reloadKey]);
+
+
+    // Last six months, for the chart. A failure here never hides the rest of the page.
+  const [trend, setTrend] = useState(null);
+  const [trendFailed, setTrendFailed] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    setTrendFailed(false);
+    getTrend(6)
+      .then((data) => !cancelled && setTrend(data))
+      .catch(() => !cancelled && setTrendFailed(true));
+    return () => {
+      cancelled = true;
+    };
+  }, [reloadKey]);
+
 
   const reload = useCallback(() => setReloadKey((key) => key + 1), []);
 
@@ -155,6 +173,38 @@ export default function Dashboard() {
               tone={net > 0 ? 'text-income' : 'text-bone'}
             />
           </section>
+
+
+                    <section className="mt-12" aria-labelledby="trend-title">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+              <h2 id="trend-title" className="text-sm font-medium text-mist">
+                Last 6 months
+              </h2>
+              <div className="flex items-center gap-5 text-sm text-mist" aria-hidden="true">
+                <span className="flex items-center gap-2">
+                  <span className="size-3 rounded-[2px] bg-income" /> Income
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="size-3 rounded-[2px] bg-brass" /> Spending
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-4 border-t border-[#1e3538] pt-6">
+              {trendFailed ? (
+                <p className="text-[15px] text-mist">Couldn't load the trend. Refresh to try again.</p>
+              ) : !trend ? (
+                <p role="status" className="text-[15px] text-mist">
+                  Loading…
+                </p>
+              ) : trend.every((row) => Number(row.income) === 0 && Number(row.expense) === 0) ? (
+                <p className="text-[15px] text-mist">No income or spending in the last 6 months.</p>
+              ) : (
+                <TrendChart data={trend} selectedMonth={month} onSelect={setMonth} />
+              )}
+            </div>
+          </section>
+
 
           <section className="mt-12" aria-labelledby="by-category-title">
             <h2 id="by-category-title" className="text-sm font-medium text-mist">

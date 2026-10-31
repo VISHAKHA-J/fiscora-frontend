@@ -35,3 +35,6 @@ export function shiftMonth(month, delta) {
 }
 
 export const currentMonth = () => todayISO().slice(0, 7);
+
+// "2026-10" -> "Oct"
+export const formatMonthShort = (month) => MONTHS[Number(month.split('-')[1]) - 1];
