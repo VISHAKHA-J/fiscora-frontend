@@ -7,6 +7,7 @@ import Register from './pages/Register.jsx';
 import Categories from './pages/Categories.jsx';
 import Transactions from './pages/Transactions.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import Budgets from './pages/Budgets.jsx';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/transactions" element={<Transactions />} />
+          <Route path="/budgets" element={<Budgets />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Route>

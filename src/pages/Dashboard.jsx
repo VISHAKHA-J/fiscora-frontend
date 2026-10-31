@@ -6,6 +6,8 @@ import { currentMonth, formatDate, formatMonth, shiftMonth } from '../utils/date
 import { formatMoney } from '../utils/money.js';
 import SpendingDonut, { SLICE_COLORS } from '../components/SpendingDonut.jsx';
 import TrendChart from '../components/TrendChart.jsx';
+import BudgetMeter from '../components/BudgetMeter.jsx';
+import { getBudgets } from '../services/budgetService.js';
 
 
 const textAction =
@@ -65,6 +67,20 @@ export default function Dashboard() {
       cancelled = true;
     };
   }, [reloadKey]);
+
+
+
+    // Budgets for the month being viewed. Like the trend, a failure here stays quiet.
+  const [budgets, setBudgets] = useState([]);
+  useEffect(() => {
+    let cancelled = false;
+    getBudgets(month)
+      .then((list) => !cancelled && setBudgets(list))
+      .catch(() => !cancelled && setBudgets([]));
+    return () => {
+      cancelled = true;
+    };
+  }, [month, reloadKey]);
 
 
   const reload = useCallback(() => setReloadKey((key) => key + 1), []);
@@ -241,6 +257,37 @@ export default function Dashboard() {
               </div>
             )}
           </section>
+
+          {budgets.length > 0 && (
+            <section className="mt-12" aria-labelledby="budgets-title">
+              <div className="flex items-baseline justify-between gap-4">
+                <h2 id="budgets-title" className="text-sm font-medium text-mist">
+                  Budgets in {formatMonth(month)}
+                </h2>
+                <Link to="/budgets" className={`text-sm ${inlineLink}`}>
+                  Manage
+                </Link>
+              </div>
+
+              <ul className="mt-3 border-t border-[#1e3538]">
+                {[...budgets]
+                  .sort((a, b) => Number(b.percentUsed) - Number(a.percentUsed))
+                  .map((budget) => (
+                    <li key={budget.id} className="border-b border-[#1e3538] py-4">
+                      <div className="flex items-baseline justify-between gap-6">
+                        <span className="min-w-0 truncate text-base font-medium">{budget.categoryName}</span>
+                        <span className="text-sm text-mist tabular-nums">
+                          {formatMoney(budget.spent)} of {formatMoney(budget.amount)}
+                        </span>
+                      </div>
+                      <div className="mt-2.5">
+                        <BudgetMeter budget={budget} />
+                      </div>
+                    </li>
+                  ))}
+              </ul>
+            </section>
+          )}
 
           <section className="mt-12" aria-labelledby="recent-title">
             <div className="flex items-baseline justify-between gap-4">
